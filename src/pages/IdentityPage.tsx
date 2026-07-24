@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { BrutalInput, BrutalCheckbox, BrutalToggle, BrutalSelect, BrutalFieldset } from '../common/Forms';
 import { Button } from '../common/Buttons';
 import { Avatar } from '../common/Avatar';
-import { SystemAlert, AlertMessage, AlertVariant } from '../common/Alert'; // UUSI TUONTI
+import { SystemAlert } from '../common/Alert';
+import type { AlertMessage, AlertVariant } from '../common/Alert';
 
 export function IdentityPage() {
   const [alias, setAlias] = useState('supervesa');

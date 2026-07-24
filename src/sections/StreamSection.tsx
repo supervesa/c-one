@@ -1,10 +1,8 @@
-import { useState } from 'react'; // Tuodaan tilanhallinta
-import { Palette, Eye } from 'lucide-react';
-// Poistettu: import { Link } from 'react-router-dom';
+import { useState } from 'react'; // Tuodaan tilanhallinta, lucide-react poistettu!
 import type { StreamItem } from '../data/mockStream';
 import { BrutalTag } from '../common/BrutalTag';
 import { Avatar } from '../common/Avatar';
-import { ThreadModal } from '../common/ThreadModal'; // Tuodaan uusi kellariluukku
+import { ThreadModal } from '../common/ThreadModal';
 import '../common/css/stream.css';
 
 interface StreamSectionProps {
@@ -18,7 +16,6 @@ export function StreamSection({
   activeCardMenuId,
   setActiveCardMenuId,
 }: StreamSectionProps) {
-  // TILA: Hallitsee kellarin aukaisua ja valittua fragmenttia
   const [activeThread, setActiveThread] = useState<StreamItem | null>(null);
 
   return (
@@ -30,8 +27,6 @@ export function StreamSection({
       <div className="brutal-stream-container">
         {items.map(item => {
           const initials = item.author ? item.author.substring(0, 2).toUpperCase() : 'ID';
-          
-          // Oletetaan, että datassa voi olla replyCount (esim. 3). Jos ei ole, näytetään vain "FEEDBACK"
           const feedbackText = item.replyCount ? `${item.replyCount} FEEDBACKS` : 'FEEDBACK';
 
           return (
@@ -46,7 +41,10 @@ export function StreamSection({
                   <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span className="brutal-fragment-author">{item.author}</span>
                     <span style={{ color: 'var(--text-muted)' }}>//</span>
-                    <Palette size={10} style={{ color: 'var(--text-muted)' }} />
+                    
+                    {/* Palette-ikoni korvattu brutalistisella ASCII-tagilla */}
+                    <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: '10px' }}>[ * ]</span>
+                    
                     <span style={{ color: 'var(--text-muted)' }}>{item.title}</span>
                   </span>
                   
@@ -78,7 +76,10 @@ export function StreamSection({
                     <img src={item.img} alt="Fragment Visual" />
                     <div className="image-overlay font-data-micro">
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Eye size={10} strokeWidth={1} /> {item.tag}
+                        
+                        {/* Eye-ikoni korvattu ASCII-silmällä */}
+                        <span style={{ fontFamily: 'var(--font-mono)' }}>[ O ]</span> {item.tag}
+                        
                       </span>
                       <span>SCAN_OK</span>
                     </div>
@@ -96,7 +97,6 @@ export function StreamSection({
                     </BrutalTag>
                   ))}
                   
-                  {/* Pysyvä hiljainen indikaattori ketjun koosta (jos vastauksia on) */}
                   {item.replyCount && item.replyCount > 0 ? (
                     <span style={{ color: 'var(--text-muted)', marginLeft: '4px', letterSpacing: '1px' }}>
                       ↳ {item.replyCount} FEEDBACKS
@@ -129,7 +129,6 @@ export function StreamSection({
         )}
       </div>
 
-      {/* --- MAANALAINEN KERROS (MODAALI) --- */}
       <ThreadModal 
         isOpen={!!activeThread} 
         onClose={() => setActiveThread(null)} 
