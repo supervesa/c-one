@@ -1,0 +1,23 @@
+.brutal-btn-base {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.2s ease;
+}
+.brutal-btn-primary {
+  background: var(--text-main);
+  color: var(--bg-color);
+  padding: 12px 24px;
+  font-size: 12px;
+  font-weight: bold;
+}
+.brutal-btn-primary:hover { opacity: 0.8; }
+.brutal-btn-action {
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 0;
+  letter-spacing: 1px;
+}
+.brutal-btn-action:hover { color: var(--text-main); }

@@ -3,6 +3,8 @@
   --text-main: #e0e0e0;
   --text-muted: #666666;
   --font-mono: 'Courier New', Courier, monospace;
+  --pop-amppari-red: #ff3333;
+  --pop-kirppu-green: #33ff33;
 }
 body {
   background-color: var(--bg-color);
@@ -12,3 +14,18 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 * { box-sizing: border-box; }
+
+/* --- TYPOGRAPHY (Brutalist Micro-data) --- */
+.font-data-micro {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.font-action {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
