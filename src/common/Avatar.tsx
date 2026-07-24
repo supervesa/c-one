@@ -1,21 +1,15 @@
-export function Avatar({ name, size = 32 }: { name: string, size?: number }) {
-  const initial = name ? name.charAt(0).toUpperCase() : '?';
+export function Avatar({ fallback, size = 'md' }: { fallback: string, size?: 'sm' | 'md' | 'lg' }) {
+  const sizeMap = { sm: 24, md: 32, lg: 64 };
+  const s = sizeMap[size];
   return (
     <div style={{
-      width: size,
-      height: size,
-      minWidth: size,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'var(--text-main)',
-      color: 'var(--bg-color)',
-      fontFamily: 'var(--font-mono)',
-      fontWeight: 'bold',
-      fontSize: size * 0.5,
+      width: s, height: s, minWidth: s,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: 'var(--text-main)', color: 'var(--bg-color)',
+      fontFamily: 'var(--font-mono)', fontWeight: 'bold', fontSize: s * 0.4,
       border: '1px solid var(--text-main)'
     }}>
-      {initial}
+      {fallback}
     </div>
   );
 }

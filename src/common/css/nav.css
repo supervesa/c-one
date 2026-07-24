@@ -1,0 +1,45 @@
+.brutal-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bg-color);
+  border-top: 2px solid var(--text-main);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 64px;
+  z-index: 1000;
+}
+.brutal-nav-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brutal-nav-btn.is-active {
+  color: var(--bg-color);
+  background: var(--text-main);
+  font-weight: bold;
+}
+.brutal-nav-btn:hover:not(.is-active) {
+  color: var(--text-main);
+  background: color-mix(in srgb, var(--text-main) 10%, transparent);
+}
+/* Estetään alapalkin osuminen sisällön päälle */
+.page-with-nav {
+  padding: 24px;
+  padding-bottom: 88px; /* Tilaa alapalkille */
+  min-height: 100dvh;
+  background: var(--bg-color);
+}

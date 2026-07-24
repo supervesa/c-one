@@ -1,237 +1,205 @@
 import fs from 'fs';
 
 const files = {
-  // --- 1. CSS: Järjestelmäilmoitukset (Alerts) ---
-  'src/common/css/alerts.css': `
-.brutal-alert {
-  border: 1px solid var(--text-main);
-  padding: 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    color-mix(in srgb, var(--text-main) 5%, transparent) 10px,
-    color-mix(in srgb, var(--text-main) 5%, transparent) 20px
+  // --- 1. UUSI: Forms.tsx (Lomakekomponentit) ---
+  'src/common/Forms.tsx': `
+import React from 'react';
+import './css/forms.css';
+
+export function BrutalFieldset({ legend, children }: { legend: string, children: React.ReactNode }) {
+  return (
+    <fieldset style={{ border: '1px solid var(--text-main)', padding: '16px', marginBottom: '24px' }}>
+      <legend style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', padding: '0 8px' }}>
+        [ {legend} ]
+      </legend>
+      {children}
+    </fieldset>
   );
 }
-.brutal-alert.sys { border-color: var(--text-muted); color: var(--text-muted); }
-.brutal-alert.success { border-color: var(--pop-kirppu-green); color: var(--pop-kirppu-green); }
-.brutal-alert.error { border-color: var(--pop-amppari-red); color: var(--pop-amppari-red); }
-`,
 
-  // --- 2. CSS: Yhtenäiset painikkeet ---
-  'src/common/css/buttons.css': `
-.brutal-btn-base {
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  background: none;
-  transition: all 0.2s ease;
-}
-.brutal-btn-primary {
-  background: var(--text-main);
-  color: var(--bg-color);
-  padding: 12px 24px;
-  font-size: 12px;
-  font-weight: bold;
-}
-.brutal-btn-primary:hover { opacity: 0.8; }
-.brutal-btn-action {
-  color: var(--text-muted);
-  font-size: 10px;
-  padding: 0;
-  letter-spacing: 1px;
-}
-.brutal-btn-action:hover { color: var(--text-main); }
-`,
-
-  // --- 3. Komponentti: Alert (Järjestelmäviestit) ---
-  'src/common/Alert.tsx': `
-import './css/alerts.css';
-
-export function Alert({ message, type = 'sys' }: { message: string, type?: 'success' | 'error' | 'sys' }) {
+export function BrutalInput({ label, meta, placeholder, value, onChange }: any) {
   return (
-    <div className={"brutal-alert " + type}>
-      [ {type.toUpperCase()}_MSG ] // {message}
+    <div className="brutal-form-group" style={{ marginBottom: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <label className="brutal-label">{label}</label>
+        {meta && <span className="brutal-label" style={{ color: 'var(--pop-amppari-red)' }}>{meta}</span>}
+      </div>
+      <input className="brutal-input" placeholder={placeholder} value={value} onChange={onChange} />
+    </div>
+  );
+}
+
+export function BrutalSelect({ label, options, value, onChange }: any) {
+  return (
+    <div className="brutal-form-group" style={{ marginBottom: '16px' }}>
+      <label className="brutal-label">{label}</label>
+      <select className="brutal-select" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((opt: any) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+      </select>
+    </div>
+  );
+}
+
+export function BrutalCheckbox({ label, checked, onChange }: any) {
+  return (
+    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-main)' }}>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} style={{ accentColor: 'var(--text-main)' }} />
+      {label}
+    </label>
+  );
+}
+
+export function BrutalToggle({ label, checked, onChange, onText, offText }: any) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+      <span className="brutal-label">{label}</span>
+      <button 
+        onClick={() => onChange(!checked)}
+        style={{
+          background: checked ? 'var(--text-main)' : 'transparent',
+          color: checked ? 'var(--bg-color)' : 'var(--text-muted)',
+          border: '1px solid var(--text-main)',
+          padding: '4px 8px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '10px',
+          cursor: 'pointer'
+        }}
+      >
+        {checked ? onText : offText}
+      </button>
     </div>
   );
 }
 `,
 
-  // --- 4. Komponentti: Button (Kapseloitu painike) ---
-  'src/common/Button.tsx': `
+  // --- 2. UUSI: Buttons.tsx (Napit IdentityPagelle) ---
+  'src/common/Buttons.tsx': `
+import React from 'react';
 import './css/buttons.css';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'action';
-  label: string;
+  variant?: 'primary' | 'secondary' | 'negative' | 'action';
+  block?: boolean;
 }
 
-export function Button({ variant = 'primary', label, className = '', ...props }: ButtonProps) {
-  const baseClass = variant === 'primary' ? 'brutal-btn-primary' : 'brutal-btn-action';
+export function Button({ variant = 'primary', block, className = '', children, ...props }: ButtonProps) {
+  let inlineStyle: React.CSSProperties = { 
+    width: block ? '100%' : 'auto',
+    border: '1px solid var(--text-main)',
+    background: variant === 'primary' ? 'var(--text-main)' : 'transparent',
+    color: variant === 'primary' ? 'var(--bg-color)' : (variant === 'negative' ? 'var(--pop-amppari-red)' : 'var(--text-main)'),
+    borderColor: variant === 'negative' ? 'var(--pop-amppari-red)' : 'var(--text-main)',
+    padding: '12px 24px',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    cursor: 'pointer',
+    flex: block ? 'none' : 1
+  };
+
   return (
-    <button className={"brutal-btn-base " + baseClass + " " + className} {...props}>
-      {variant === 'action' ? "[ " + label + " ]" : label}
+    <button style={inlineStyle} {...props}>
+      {children}
     </button>
   );
 }
 `,
 
-  // --- 5. Komponentti: Chip (Interaktiivinen tagi) ---
-  'src/common/Chip.tsx': `
-export function Chip({ label, active, onClick, colorVar }: { label: string, active: boolean, onClick: () => void, colorVar?: string }) {
-  const activeColor = colorVar || 'var(--text-main)';
-  const color = active ? activeColor : 'var(--text-muted)';
-  
-  return (
-    <button 
-      onClick={onClick}
-      style={{
-        background: 'none',
-        border: '1px solid',
-        borderColor: active ? color : 'transparent',
-        color: color,
-        fontFamily: 'var(--font-mono)',
-        fontSize: '10px',
-        textTransform: 'uppercase',
-        padding: '4px 8px',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-        letterSpacing: '1px'
-      }}>
-      {label}
-    </button>
-  );
-}
-`,
+  // --- 3. PÄIVITYS: Alert.tsx (Tyypitetty SystemAlert) ---
+  'src/common/Alert.tsx': `
+export type AlertVariant = 'success' | 'error' | 'sys' | 'neutral' | 'attention';
 
-  // --- 6. Komponentti: InputMenu (Kellariluukun lisävalikko) ---
-  'src/common/InputMenu.tsx': `
-export function InputMenu({ isOpen, onSelect }: { isOpen: boolean, onSelect: (val: string) => void }) {
-  if (!isOpen) return null;
+export interface AlertMessage {
+  id: number;
+  type: AlertVariant;
+  message: string;
+}
+
+export function SystemAlert({ alert, onClose }: { alert: AlertMessage, onClose: (id: number) => void }) {
+  let borderColor = 'var(--text-main)';
+  let color = 'var(--text-main)';
   
-  const options = ['ATTACH_COORD', 'ENCRYPT_PAYLOAD', 'ADD_VISUAL'];
-  
+  if (alert.type === 'success') { borderColor = 'var(--pop-kirppu-green)'; color = 'var(--pop-kirppu-green)'; }
+  if (alert.type === 'error' || alert.type === 'attention') { borderColor = 'var(--pop-amppari-red)'; color = 'var(--pop-amppari-red)'; }
+  if (alert.type === 'neutral' || alert.type === 'sys') { borderColor = 'var(--text-muted)'; color = 'var(--text-muted)'; }
+
   return (
     <div style={{
-      position: 'absolute',
-      bottom: '100%',
-      left: 0,
-      background: 'var(--bg-color)',
-      border: '1px solid var(--text-main)',
-      borderBottom: 'none',
+      border: \`1px solid \${borderColor}\`,
+      color: color,
+      padding: '16px',
+      fontFamily: 'var(--font-mono)',
+      fontSize: '12px',
+      textTransform: 'uppercase',
       display: 'flex',
-      flexDirection: 'column',
-      minWidth: '200px',
-      zIndex: 2002
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      background: 'var(--bg-color)',
+      boxShadow: \`4px 4px 0 \${borderColor}\`
     }}>
-      {options.map(opt => (
-        <button 
-          key={opt}
-          onClick={() => onSelect(opt)}
-          style={{
-            background: 'none', border: 'none', borderBottom: '1px dashed var(--text-muted)',
-            color: 'var(--text-main)', padding: '12px', fontFamily: 'var(--font-mono)',
-            fontSize: '10px', textAlign: 'left', cursor: 'pointer', textTransform: 'uppercase'
-          }}
-        >
-          + {opt}
-        </button>
-      ))}
+      <span>[ {alert.type.toUpperCase()} ] // {alert.message}</span>
+      <button onClick={() => onClose(alert.id)} style={{ background: 'none', border: 'none', color, cursor: 'pointer', fontFamily: 'var(--font-mono)', fontWeight: 'bold' }}>[ X ]</button>
     </div>
   );
 }
 `,
 
-  // --- 7. PÄIVITYS: ThreadModal (Kytketään InputMenu käyttöön) ---
-  'src/common/ThreadModal.tsx': `
-import { useState, useEffect } from 'react';
-import type { StreamItem } from '../data/mockStream';
-import { InputMenu } from './InputMenu';
-import { Button } from './Button';
-import './css/thread.css';
-
-interface ThreadModalProps { isOpen: boolean; onClose: () => void; post: StreamItem | null; }
-
-export function ThreadModal({ isOpen, onClose, post }: ThreadModalProps) {
-  const [comment, setComment] = useState('');
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (isOpen && "vibrate" in navigator) navigator.vibrate([15]); 
-    if (!isOpen) setMenuOpen(false); // Nollataan kun suljetaan
-  }, [isOpen]);
-
-  if (!post) return null;
-
+  // --- 4. PÄIVITYS: Avatar.tsx (Tukee nyt 'fallback' ja 'size') ---
+  'src/common/Avatar.tsx': `
+export function Avatar({ fallback, size = 'md' }: { fallback: string, size?: 'sm' | 'md' | 'lg' }) {
+  const sizeMap = { sm: 24, md: 32, lg: 64 };
+  const s = sizeMap[size];
   return (
-    <>
-      <div className={"thread-underground-overlay " + (isOpen ? "is-active" : "")} onClick={onClose} />
-      <div className={"thread-underground-panel " + (isOpen ? "is-active" : "")}>
-        
-        <div className="thread-underground-content">
-          <Button variant="action" label="CLOSE_HATCH" onClick={onClose} style={{ marginBottom: '24px' }} />
-          
-          <div style={{ marginBottom: '40px', paddingBottom: '24px', borderBottom: '1px dashed var(--text-muted)' }}>
-            <h2 style={{ fontSize: '14px', marginBottom: '8px', color: 'var(--text-main)', textTransform: 'uppercase' }}>{post.title}</h2>
-            <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'var(--text-muted)' }}>{post.text}</p>
-          </div>
-          <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-            [ // FEEDBACKS_LOADING... ]
-          </div>
-        </div>
-
-        <div className="thread-input-wrapper" style={{ position: 'relative' }}>
-          <InputMenu isOpen={menuOpen} onSelect={(val) => { console.log(val); setMenuOpen(false); }} />
-          
-          <button 
-            onClick={() => setMenuOpen(!menuOpen)}
-            style={{ background: 'none', border: '1px solid var(--text-muted)', color: 'var(--text-main)', padding: '0 12px', cursor: 'pointer', fontFamily: 'var(--font-mono)' }}
-          >
-            +
-          </button>
-          
-          <input 
-            className="thread-input" 
-            placeholder="Syötä signaali..." 
-            value={comment} 
-            onChange={(e) => setComment(e.target.value)} 
-          />
-          <button className="thread-send-btn">TRANSMIT</button>
-        </div>
-      </div>
-    </>
+    <div style={{
+      width: s, height: s, minWidth: s,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: 'var(--text-main)', color: 'var(--bg-color)',
+      fontFamily: 'var(--font-mono)', fontWeight: 'bold', fontSize: s * 0.4,
+      border: '1px solid var(--text-main)'
+    }}>
+      {fallback}
+    </div>
   );
 }
 `,
 
-  // --- 8. PÄIVITYS: FilterBar (Kytketään uusi Chip-komponentti) ---
-  'src/sections/FilterBar.tsx': `
-import { Chip } from '../common/Chip';
-
-export function FilterBar({ active, onChange }: { active: string, onChange: (f: string) => void }) {
+  // --- 5. PÄIVITYS: BrutalTag.tsx (Tukee nyt 'variant' ja 'children') ---
+  'src/common/BrutalTag.tsx': `
+export function BrutalTag({ variant, children }: { variant?: 'amppari' | 'kirppu' | 'orbit' | string, children: React.ReactNode }) {
+  let color = 'var(--text-muted)';
+  if (variant === 'amppari') color = 'var(--pop-amppari-red)';
+  if (variant === 'kirppu') color = 'var(--pop-kirppu-green)';
+  
   return (
-    <div style={{ display: 'flex', gap: '8px', marginBottom: '32px', borderBottom: '1px solid var(--text-muted)', paddingBottom: '16px', maxWidth: '680px', margin: '0 auto 32px auto', alignItems: 'center' }}>
-      <span className="font-data-micro" style={{ color: 'var(--text-muted)', marginRight: '8px' }}>// SIGNAL_FILTER:</span>
-      
-      <Chip label="ALL" active={active === 'all'} onClick={() => onChange('all')} />
-      <Chip label="AMPPARI" active={active === 'amppari'} onClick={() => onChange('amppari')} colorVar="var(--pop-amppari-red)" />
-      <Chip label="KIRPPU" active={active === 'kirppu'} onClick={() => onChange('kirppu')} colorVar="var(--pop-kirppu-green)" />
-    </div>
+    <span style={{
+      fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase',
+      color: color, border: '1px solid ' + color, padding: '2px 6px', display: 'inline-block'
+    }}>
+      {children}
+    </span>
   );
+}
+`,
+
+  // --- 6. PÄIVITYS: CSS (Toast-ilmoitusten kontti oikeaan yläkulmaan) ---
+  'src/common/css/alerts.css': `
+.brutal-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
 }
 `
 };
 
-// Kirjoitetaan tiedostot järjestelmään
 Object.keys(files).forEach(file => {
   fs.writeFileSync(file, files[file].trim(), 'utf8');
-  console.log('✓ Palautettiin/Päivitettiin: ' + file);
+  console.log('✓ Luotu/Päivitetty yhteensopivaksi: ' + file);
 });
 
-console.log('\\n[ ! ] Common-komponentit (Alert, Button, Chip, InputMenu) injektoitu onnistuneesti!');
+console.log('\\n[ ! ] Puuttuvat riippuvuudet korjattu! Viten pitäisi nyt kääntyä.');

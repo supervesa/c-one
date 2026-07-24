@@ -1,18 +1,10 @@
-.brutal-alert {
-  border: 1px solid var(--text-main);
-  padding: 16px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  margin-bottom: 24px;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    color-mix(in srgb, var(--text-main) 5%, transparent) 10px,
-    color-mix(in srgb, var(--text-main) 5%, transparent) 20px
-  );
+.brutal-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
 }
-.brutal-alert.sys { border-color: var(--text-muted); color: var(--text-muted); }
-.brutal-alert.success { border-color: var(--pop-kirppu-green); color: var(--pop-kirppu-green); }
-.brutal-alert.error { border-color: var(--pop-amppari-red); color: var(--pop-amppari-red); }
