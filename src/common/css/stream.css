@@ -1,0 +1,11 @@
+.brutal-stream-container { display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; }
+.brutal-fragment { display: flex; gap: 16px; padding: 24px 0; border-bottom: 1px dashed color-mix(in srgb, var(--text-main) 15%, transparent); transition: background 0.3s ease; }
+.brutal-fragment:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--text-main) 2%, transparent) 0%, transparent 100%); }
+.brutal-fragment-main { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.brutal-fragment-meta { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.brutal-fragment-author { color: var(--text-main); font-weight: bold; }
+.brutal-fragment-payload { font-size: 14px; line-height: 1.6; color: var(--text-main); white-space: pre-wrap; }
+.brutal-fragment-actions { display: flex; gap: 16px; font-family: var(--font-mono); font-size: 10px; opacity: 0; transition: opacity 0.2s ease; }
+.brutal-fragment:hover .brutal-fragment-actions { opacity: 1; }
+.brutal-action-btn { cursor: pointer; color: var(--text-muted); text-transform: uppercase; background: none; border: none; padding: 0; }
+.brutal-action-btn:hover { color: var(--text-main); }
