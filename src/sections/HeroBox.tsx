@@ -1,44 +1,68 @@
-import { CommandMenu } from '../common/CommandMenu';
-import { Popover } from '../common/Popover';
+import { useState } from 'react';
 
-export function HeroBox({ currentRoute = 'canvas' }: { currentRoute?: string }) {
+export function HeroBox({ currentRoute = 'stream' }: { currentRoute?: string }) {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   return (
-    <header style={{ marginBottom: '40px', borderBottom: '2px solid var(--text-main)', paddingBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
-      <div>
-        <h1 style={{ fontFamily: 'var(--font-mono)', margin: 0, fontSize: '24px', color: 'var(--text-main)', textTransform: 'uppercase', letterSpacing: '2px' }}>
-          C-ONE // {currentRoute}
-        </h1>
-        <div className="font-data-micro" style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
-          [ STATUS: ONLINE ] // ID: SUPERVESA // NODE: LOCAL
-        </div>
-      </div>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '16px' }}>
+    <section className="hero-section" style={{ marginBottom: '40px' }}>
+      <div className="action-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
         
-        {/* Nappirivi oikeassa yläkulmassa */}
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          
-          {/* Brutal Popover -esimerkki */}
-          <Popover trigger={
-            <button style={{ background: 'none', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', padding: '6px 10px', fontFamily: 'var(--font-mono)', fontSize: '10px', cursor: 'pointer' }}>
-              [ SYS_INFO ]
-            </button>
-          }>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div>UPTIME: <span style={{ color: 'var(--pop-kirppu-green)' }}>99.9%</span></div>
-              <div>LATENCY: <span style={{ color: 'var(--pop-amppari-red)' }}>14ms</span></div>
-              <div style={{ borderTop: '1px dashed var(--text-muted)', paddingTop: '8px', marginTop: '4px' }}>
-                SIGNAL: STRONG
-              </div>
-            </div>
-          </Popover>
-
-          {/* Agressiivinen Menu */}
-          <CommandMenu />
-          
+        <div>
+          <p className="hero-subtitle" style={{ marginTop: 0, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            LAYER 1 // SECURE
+          </p>
+          {/* Uuden rakenteen vaatima reititystieto sulautettuna vanhaan tyyliin */}
+          <p style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-main)', fontSize: '10px', marginTop: '8px' }}>
+            [ MODULE: {currentRoute.toUpperCase()} ]
+          </p>
         </div>
-
+         
+        {/* Popoverin laukaisin alkuperäisellä logiikalla */}
+        <div style={{ position: 'relative' }}>
+          <button 
+            className="brutal-btn"
+            onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+            style={{ background: 'none', border: '1px solid var(--text-main)', color: 'var(--text-main)', padding: '6px 12px', fontFamily: 'var(--font-mono)', fontSize: '12px', cursor: 'pointer' }}
+          >
+            {isPopoverOpen ? '[ CLOSE ]' : '[ SYS_ACT ]'}
+          </button>
+           
+          {/* Brutalistinen Popover */}
+          {isPopoverOpen && (
+            <div className="popover-container" style={{ 
+              position: 'absolute', 
+              top: '100%', 
+              right: 0, 
+              background: 'var(--bg-color)', 
+              border: '2px solid var(--text-main)', 
+              marginTop: '8px', 
+              zIndex: 100, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              minWidth: '160px',
+              boxShadow: '4px 4px 0 var(--text-main)'
+            }}>
+              <button className="popover-item" style={{ background: 'none', border: 'none', borderBottom: '1px dashed var(--text-muted)', color: 'var(--text-main)', padding: '12px', textAlign: 'left', fontFamily: 'var(--font-mono)', fontSize: '11px', cursor: 'pointer' }}>
+                Ping Network
+              </button>
+              <button className="popover-item" style={{ background: 'none', border: 'none', borderBottom: '1px dashed var(--text-muted)', color: 'var(--text-main)', padding: '12px', textAlign: 'left', fontFamily: 'var(--font-mono)', fontSize: '11px', cursor: 'pointer' }}>
+                Force Sync
+              </button>
+              <button className="popover-item accent" style={{ background: 'none', border: 'none', color: 'var(--pop-amppari-red)', padding: '12px', textAlign: 'left', fontFamily: 'var(--font-mono)', fontSize: '11px', cursor: 'pointer' }}>
+                Purge Trace
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </header>
+
+      {/* Alkuperäinen raskas typografia */}
+      <h1 className="hero-title" style={{ fontFamily: 'var(--font-mono)', fontSize: '3.5rem', lineHeight: '1', color: 'var(--text-main)', margin: '0 0 24px 0', letterSpacing: '-2px' }}>
+        COLLECTIVE<br/>ONE
+      </h1>
+      
+      {/* Alkuperäinen jakaja */}
+      <div className="ascii-divider" style={{ borderBottom: '2px dashed var(--text-main)', width: '100%' }}></div>
+    </section>
   );
 }
